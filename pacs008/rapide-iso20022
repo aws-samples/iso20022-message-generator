@@ -1,0 +1,2 @@
+#! /bin/bash
+java -jar build/libs/pacs008-1.0.0-SNAPSHOT.jar "$@"

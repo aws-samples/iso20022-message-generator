@@ -1,0 +1,78 @@
+# log level values: trace, debug, info, warn, error, fatal or off
+logging:
+  level:
+    root: info
+    rapide: info
+spring:
+  datasource:
+    initialization-mode: always
+    platform: h2
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:generator-db;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    show-sql: true
+  main:
+    web-application-type: "none"
+    banner-mode: "off"
+rapide:
+  PurposeCode:
+    - BONU
+    - CASH
+    - CBLK
+    - CCRD
+    - CORT
+    - DCRD
+    - DIVI
+    - DVPM
+    - EPAY
+    - FCIN
+    - FCOL
+    - GOVT
+    - HEDG
+    - ICCP
+    - IDCP
+    - INTC
+    - INTE
+    - LOAN
+    - MP2B
+    - MP2P
+    - OTHR
+    - PENS
+    - RPRE
+    - RRCT
+    - RVPM
+    - SALA
+    - SECU
+    - SSBE
+    - SUPP
+    - TAXS
+    - TRAD
+    - TREA
+    - VATX
+    - WHLD
+  Currency:
+    - Country: US
+      Code: USD
+    - Country: UK
+      Code: GBP
+  ValidationSchema:
+    - Message: 00800108
+      FileName: CBPRPlus_pacs_008_001_08_20210413_0914.xsd
+  InvalidMessageRetry: 5
+  SourceBicList:
+    - ABOCAEAA
+    - FEDXAE21
+    - FEDXAEAA
+    - FGBMAEAA
+    - NBADAEAA
+#  DestinationBicList:
+#    - FEDXAE21
+#    - BEKBGA91
+

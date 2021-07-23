@@ -1,0 +1,4 @@
+plugins {
+    id 'rapide.commons'
+    id 'java-library'
+}

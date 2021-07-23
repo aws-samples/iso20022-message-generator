@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'rapide.jacoco'
+}
+
+group = 'rapide.iso20022'
+version = '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'com.prowidesoftware:pw-iso20022:SRU2020-9.1.6'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation 'org.mockito:mockito-core:3.5.15'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.assertj:assertj-guava:3.4.0'
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}

@@ -1,0 +1,30 @@
+# log level values: trace, debug, info, warn, error, fatal or off
+logging:
+  level:
+    root: info
+    rapide: info
+spring:
+  datasource:
+    initialization-mode: always
+    platform: h2
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:generator-db;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    show-sql: true
+  main:
+    web-application-type: "none"
+    allow-bean-definition-overriding: true
+    banner-mode: "off"
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
