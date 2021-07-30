@@ -134,7 +134,8 @@ You can provide currency for countries by adding them in the `application.yaml` 
 
 ### Source and Destination BICs
 You can add a list of source and destination BICs to be used in generated messages by adding them in the `application.yaml` 
-under `rapide.Currency` property:
+under `rapide.SourceBicList` property for source BIC list (from BIC) and `rapide.DestinationBicList` property for 
+destination BIC list:
 ```yaml
    rapide:
       SourceBicList:
