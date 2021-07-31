@@ -60,15 +60,27 @@ Rapide software is built using Java and it uses following open source Java libra
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Gradle Build Tool](https://gradle.org/)
 - [Hibernate ORM](https://hibernate.org/orm/)
+- [Project Lombok](https://projectlombok.org/)  
 - [Prowide iso20022 library](https://github.com/prowide/prowide-iso20022)
 
+### Databases
+There two databases used by the message generator:  
+- LEI Database
+- BIC Database
+  
+The `rapide.iso20022.data` package has Spring Data Repository and JPA Entities for each database. 
+- [LegalEntity](pacs008/src/main/java/rapide/iso20022/data/lei/model/LegalEntity.java) - see this class for LegalEntity attributes
+- [BICRecord](pacs008/src/main/java/rapide/iso20022/data/bic/model/BICRecord.java) - see this class for BIC attributes
+- [Database Schema](pacs008/src/main/resources/schema.sql) has DDL for above entities as well code for loading H2 in-memory 
+  database with records from a CSV files. 
+  
 ## Configuring the Message Generator
 The ISO 20022 message generator CLI tool provides various options to customize message generation. As mentioned the message generator 
 tool built using Spring Boot and hence the customizations are done using Spring Boot's `application.yaml` file. 
 These options can be provided using [Spring Boot's mechanisms for providing application yaml](
 https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config), see section 2.3:
 
-1. Modifying the [application.yaml](pacs008/src/main/java/resources/application.yaml) file and rebuilding the jar.
+1. Modifying the [application.yaml](pacs008/src/main/resources/application.yml) file and rebuilding the jar.
 1. Providing an updated `application.yaml` in current directory (i.e. pacs008) or config directory in pacs008d directory. 
    Spring Boot will automatically read `application.yaml` placed above directory.
 
