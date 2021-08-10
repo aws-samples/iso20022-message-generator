@@ -16,6 +16,7 @@ name of the wrapper bash shell script for the CLI tool.
      * [Databases](#databases)
 
   1. [Configuring the Message Generator](#configuring-the-message-generator)
+     * [Increasing log level](#increasing-log-level)
      * [Using a Relational Database Server](#using-a-relational-database-server)
      * [Category and Payment Purpose Codes](#category-and-payment-purpose-codes)
      * [Currency Codes](#currency-codes)
