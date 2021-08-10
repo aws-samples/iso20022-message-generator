@@ -6,7 +6,24 @@ project is called [rapide](https://dictionary.cambridge.org/dictionary/french-en
 The Java package names start with rapide at the root. You will notice references to rapide in different places such as 
 name of the wrapper bash shell script for the CLI tool.
 
-**Features**  
+## Table of Contents
+
+  1. [Features](#features)
+  1. [Getting Started](#getting-started)
+  1. [Usage](#usage)
+  1. [Architecture](#architecture)
+
+     * [Databases](#databases)
+
+  1. [Configuring the Message Generator](#configuring-the-message-generator)
+     * [Using a Relational Database Server](#using-a-relational-database-server)
+     * [Category and Payment Purpose Codes](#category-and-payment-purpose-codes)
+     * [Currency Codes](#currency-codes)
+     * [Source and Destination BICs](#source-and-destination-bics)
+    
+  1. [License](#license)
+
+## Features
 The ISO 20022 message generator supports generation of pacs.008 xml messages for serial message flow. It can generate a 
 configurable number of messages with randomization of message elements as below:
 - Charge Bearer: Randomly rotate value of <ChrgBr> between "SHAR", "DEBT" or "CRED". If "CRED" is used then <ChrgsInf> block is added 
@@ -15,12 +32,14 @@ configurable number of messages with randomization of message elements as below:
 - Post Address: Randomly rotate the details of the Debtor, Ultimate Debtor and Creditor and Ultimate Creditor parties, 
   using the LEI database and randomly populates the <PstlAdr>. LEI database has to be provided by the user.
 - BIC Addresses, Instructing and Instructed Agents: Randomly rotate the details of the <InstgAgt> and <InstdAgt>, 
-  using the "BIC CODE" in the BIC database. BIC database has to be provided by the user.
+  using the "BIC CODE" in the BIC database. BIC database has to be provided by the user. See [Databases](#databases) 
+  section for details.
 - BIC Addresses, Previous Instructing Agent1, Intermediary Agent1: Randomly rotate the details of the <PrvsInstAgt1> 
-  and <IntrmyAgt1> using the "BIC CODE" in the BIC database. BIC database has to be provided by the user.
+  and <IntrmyAgt1> using the "BIC CODE" in the BIC database. BIC database has to be provided by the user. See 
+  [Databases](#databases) section for details.
 - Currency Code: Randomly rotate the Currency Code in <Ccy> with 3 character currency codes using the ISO 4217. 
 - Instructed and Instructing Agents: Users can control the use of BIC codes for instructing and instructed agents by 
-  providing a list of BIC code in a configuration file. Only BIC Codes from configuration files are used, BIC database i
+  providing a list of BIC code in a configuration file. Only BIC Codes from configuration file are used, BIC database is
   ignored.
 
 ## Getting Started
@@ -192,5 +211,5 @@ just override source BIC or destination BIC only or both.
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+This source code is licensed under the [MIT-0 License](https://github.com/aws/mit-0). See the [LICENSE](LICENSE) file for details.
 
