@@ -89,7 +89,9 @@ Usage: rapide-iso20022 [-z] [-d=<outputDirectory>] -n=<numberOfMessages> [-o=<ou
           File name prefix that will store generated messages
     -z, --archive   Flag to create zip file of generated files
 ```
-
+  
+Only `-n or --number-of-messages` is required option and if `-d or --directory` is not used then files are generated in 
+current working directory.
 
 ## Architecture
 Rapide software is built using Java and it uses following open source Java libraries, frameworks and platforms:
@@ -144,6 +146,11 @@ rapide:
   DestinationBicList:
   ...
 ```
+
+### Increasing log level
+Logging is performed using Spring Boot's [Logging](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.logging) 
+support. The [application.yaml](pacs008/src/main/resources/application.yml) file controls log levels. By default it the 
+log level is at `ERROR` level. You can change the log level to `info` or `debug` to get detailed logs for troubleshooting.
 
 ### Using a Relational Database Server
 You can replace in-memory H2 relational database with any relational database such as Amazon RDS (any support relational 

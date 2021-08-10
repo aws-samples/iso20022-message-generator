@@ -50,9 +50,9 @@ public class BICRepositoryTest {
     public void whenFindByID_thenReturnBIC() {
 
         // when
-        Optional<BICRecord> bicRecord = bicRepository.findById("AALHHKH1-XXX");
+        Optional<BICRecord> bicRecord = bicRepository.findById("ABABHKHJ-XXX");
         assertThat(bicRecord.get().getInstitutionName())
-                .isEqualTo("ABN AMRO CLEARING HONG KONG LTD");
+                .isEqualTo("DEMO BANK LTD");
     }
 
     @Test
@@ -64,6 +64,6 @@ public class BICRepositoryTest {
 
         // then
         assertThat(entities.size())
-                .isEqualTo(1722);
+                .isEqualTo(5);
     }
 }

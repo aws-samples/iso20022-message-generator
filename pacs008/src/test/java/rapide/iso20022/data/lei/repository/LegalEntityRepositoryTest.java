@@ -63,7 +63,7 @@ public class LegalEntityRepositoryTest{
 
         // then
         assertThat(entities.size())
-                .isEqualTo(5000);
+                .isEqualTo(5);
     }
 
 }

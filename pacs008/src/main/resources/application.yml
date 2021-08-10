@@ -1,8 +1,8 @@
 # log level values: trace, debug, info, warn, error, fatal or off
 logging:
   level:
-    root: info
-    rapide: info
+    root: error
+    rapide: error
 spring:
   datasource:
     initialization-mode: always
