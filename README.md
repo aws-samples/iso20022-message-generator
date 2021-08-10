@@ -6,6 +6,23 @@ project is called [rapide](https://dictionary.cambridge.org/dictionary/french-en
 The Java package names start with rapide at the root. You will notice references to rapide in different places such as 
 name of the wrapper bash shell script for the CLI tool.
 
+**Features**  
+The ISO 20022 message generator supports generation of pacs.008 xml messages for serial message flow. It can generate a 
+configurable number of messages with randomization of message elements as below:
+- Charge Bearer: Randomly rotate value of <ChrgBr> between "SHAR", "DEBT" or "CRED". If "CRED" is used then <ChrgsInf> block is added 
+  with <Amt> set to a random value ranging from "1.00" to "15.00" with 2 decimal places.
+- Category Codes and Payment Purpose Code: Randomly rotate value of <Cd> using the "Code" list in a configuration file.
+- Post Address: Randomly rotate the details of the Debtor, Ultimate Debtor and Creditor and Ultimate Creditor parties, 
+  using the LEI database and randomly populates the <PstlAdr>. LEI database has to be provided by the user.
+- BIC Addresses, Instructing and Instructed Agents: Randomly rotate the details of the <InstgAgt> and <InstdAgt>, 
+  using the "BIC CODE" in the BIC database. BIC database has to be provided by the user.
+- BIC Addresses, Previous Instructing Agent1, Intermediary Agent1: Randomly rotate the details of the <PrvsInstAgt1> 
+  and <IntrmyAgt1> using the "BIC CODE" in the BIC database. BIC database has to be provided by the user.
+- Currency Code: Randomly rotate the Currency Code in <Ccy> with 3 character currency codes using the ISO 4217. 
+- Instructed and Instructing Agents: Users can control the use of BIC codes for instructing and instructed agents by 
+  providing a list of BIC code in a configuration file. Only BIC Codes from configuration files are used, BIC database i
+  ignored.
+
 ## Getting Started
 ### Prerequsities
 The rapide software is built using Java. You will need JDK 11 or higher to be installed on your developer machine. You 
@@ -63,10 +80,22 @@ Rapide software is built using Java and it uses following open source Java libra
 - [Project Lombok](https://projectlombok.org/)  
 - [Prowide iso20022 library](https://github.com/prowide/prowide-iso20022)
 
+The diagram below shows high level architecture diagram of the Rapide CLI tool.
+
+![Rapide High Level Architecture](docs/images/iso20022-message-generator.png)
+
 ### Databases
-There two databases used by the message generator:  
-- LEI Database
-- BIC Database
+There are two databases used by the message generator:  
+- LEI Database: The data for LEI can be obtained from [Global Legal Entity Foundation or GLEIF](
+  https://www.gleif.org/en/lei-data/access-and-use-lei-data) website. The JPA Entity model mentioned below was created 
+  [data file](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) available on GLEIF web site. 
+  A sample file with dummy data is [here](pacs008/src/main/resources/db/lei_sample_records.csv).
+- BIC Database: The BIC database can be obtained from SWIFT. The JPA Entity model mentioned below was created a sample 
+  data file. A sample file with dummy data is [here](pacs008/src/main/resources/db/bic_sample_records.csv).
+  
+We recommended that you obtain the LEI and BIC data from these data providers. The data files in CSV format should be 
+consistent with the sample files mentioned above. If they diverge, you can fork this repository and modify the JPA 
+entities below to meet your needs.
   
 The `rapide.iso20022.data` package has Spring Data Repository and JPA Entities for each database. 
 - [LegalEntity](pacs008/src/main/java/rapide/iso20022/data/lei/model/LegalEntity.java) - see this class for LegalEntity attributes
