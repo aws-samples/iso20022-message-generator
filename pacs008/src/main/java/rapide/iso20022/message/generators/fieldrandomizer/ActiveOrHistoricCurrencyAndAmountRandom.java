@@ -15,26 +15,35 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public class ActiveOrHistoricCurrencyAndAmountRandom extends ActiveOrHistoricCurrencyAndAmount {
+public class ActiveOrHistoricCurrencyAndAmountRandom {
 
-    ConfigProperties configProperties;
-
-    public ActiveOrHistoricCurrencyAndAmountRandom(BigDecimal settleAmount, String currency)
+    public static ActiveOrHistoricCurrencyAndAmount getActiveOrHistoricCurrencyAndAmount(BigDecimal settleAmount, String currency)
     {
+        ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount = new ActiveOrHistoricCurrencyAndAmount();
         SecureRandom random = new SecureRandom();
         BigDecimal fxRate = BigDecimal.valueOf(10 + random.nextInt(90));
-        this.setCcy(currency);
+        activeOrHistoricCurrencyAndAmount.setCcy(currency);
         //applying FX
-        this.setValue((settleAmount.subtract(fxRate)).setScale(2, RoundingMode.CEILING));
+        activeOrHistoricCurrencyAndAmount.setValue((settleAmount.subtract(fxRate)).setScale(2, RoundingMode.CEILING));
+        return activeOrHistoricCurrencyAndAmount;
     }
 
-    public ActiveOrHistoricCurrencyAndAmountRandom(ConfigProperties configProperties)
+    // Assigns random currency
+    public static ActiveOrHistoricCurrencyAndAmount getActiveOrHistoricCurrencyAndAmount(ConfigProperties configProperties)
     {
-        this.configProperties = configProperties;
-        List<HashMap<String, String>> currency = configProperties.getCurrency();
-        SecureRandom random = new SecureRandom();
-        int index = random.nextInt(currency.size());
-        this.setCcy(currency.get(index).get("Code"));
-        this.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+        ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount = new ActiveOrHistoricCurrencyAndAmount();
+        activeOrHistoricCurrencyAndAmount.setCcy(Helper.getRandomCurrencyCode(configProperties));
+        activeOrHistoricCurrencyAndAmount.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+        return activeOrHistoricCurrencyAndAmount;
+    }
+
+    // Assigns currency for the country code provided
+    public static ActiveOrHistoricCurrencyAndAmount getActiveOrHistoricCurrencyAndAmount(ConfigProperties configProperties,
+        String countryCode)
+    {
+        ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount = new ActiveOrHistoricCurrencyAndAmount();
+        activeOrHistoricCurrencyAndAmount.setCcy(Helper.getCountryCurrencyCode(configProperties, countryCode));
+        activeOrHistoricCurrencyAndAmount.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+        return activeOrHistoricCurrencyAndAmount;
     }
 }

@@ -16,5 +16,6 @@ import java.util.Set;
 public interface BICRepository extends JpaRepository<BICRecord, String> {
     Set<BICRecord> findByBIC(String BICCode);
     Set<BICRecord> findByBranch(String BranchCode);
+    List<BICRecord> findByCountryCode(String countryCode);
     List<BICRecord> findAllExcludeInvalid();
 }

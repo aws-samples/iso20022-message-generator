@@ -11,20 +11,69 @@ import rapide.iso20022.data.bic.repository.BICRepository;
 import java.util.List;
 
 @Slf4j
-public class BranchAndFinancialInstitutionIdentification6Random extends BranchAndFinancialInstitutionIdentification6 {
-    protected BICRepository bicRepository;
-    protected List<String> restrictedBICList;
+public class BranchAndFinancialInstitutionIdentification6Random {
 
-    public BranchAndFinancialInstitutionIdentification6Random(BICRepository bicRepository) {
-        this.bicRepository = bicRepository;
-        this.setFinInstnId(new FinancialInstitutionIdentification18Random(this.bicRepository, null));
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(BICRepository bicRepository, List<String> sourceBICList,
+                                                                    String countryCode) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentification(bicRepository, sourceBICList, countryCode));
+
+        return branchAndFinancialInstitutionIdentification;
     }
 
-    public BranchAndFinancialInstitutionIdentification6Random(BICRepository bicRepository, List<String> restrictedBICList) {
-        this.bicRepository = bicRepository;
-        this.restrictedBICList = restrictedBICList;
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(BICRepository bicRepository, List<String> sourceBICList) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentification(bicRepository, sourceBICList));
 
-        this.setFinInstnId(new FinancialInstitutionIdentification18Random(this.bicRepository, restrictedBICList));
+        return branchAndFinancialInstitutionIdentification;
+    }
+
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(BICRepository bicRepository,
+                                                   String countryCode) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentification(bicRepository, countryCode));
+
+        return branchAndFinancialInstitutionIdentification;
+    }
+
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(List<String> sourceBICList,
+                                                   String countryCode) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentification(sourceBICList, countryCode));
+
+        return branchAndFinancialInstitutionIdentification;
+    }
+
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(BICRepository bicRepository) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentification(bicRepository));
+
+        return branchAndFinancialInstitutionIdentification;
+    }
+
+    public static BranchAndFinancialInstitutionIdentification6
+        getBranchAndFinancialInstitutionIdentification(List<String> sourceBICList) {
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification =
+                new BranchAndFinancialInstitutionIdentification6();
+        branchAndFinancialInstitutionIdentification.setFinInstnId(
+                FinancialInstitutionIdentification18Random.getFinancialInstitutionIdentificationFromSourceList(sourceBICList));
+
+        return branchAndFinancialInstitutionIdentification;
     }
 
 }

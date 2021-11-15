@@ -14,21 +14,22 @@ import java.security.SecureRandom;
 import java.util.List;
 
 @Slf4j
-public class PaymentTypeInformation28Random extends PaymentTypeInformation28 {
-    ConfigProperties configProperties;
+public class PaymentTypeInformation28Random {
 
-    public PaymentTypeInformation28Random(ConfigProperties configProperties)
+    public static PaymentTypeInformation28 getPaymentTypeInformation28(ConfigProperties configProperties)
     {
-        this.configProperties = configProperties;
+        PaymentTypeInformation28 paymentTypeInformation = new PaymentTypeInformation28();
 
         CategoryPurpose1Choice categoryPurpose = new CategoryPurpose1Choice();
         List<String> purposeCodes = configProperties.getPurposeCode();
         SecureRandom random = new SecureRandom();
         int index = random.nextInt(purposeCodes.size());
         categoryPurpose.setCd(purposeCodes.get(index));
-        this.setCtgyPurp(categoryPurpose);
+        paymentTypeInformation.setCtgyPurp(categoryPurpose);
 
         index = random.nextInt( Priority2Code.values().length);
-        this.setInstrPrty(Priority2Code.values()[index]);
+        paymentTypeInformation.setInstrPrty(Priority2Code.values()[index]);
+
+        return paymentTypeInformation;
     }
 }

@@ -13,16 +13,21 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public class ActiveCurrencyAndAmountRandom extends ActiveCurrencyAndAmount {
-    ConfigProperties configProperties;
+public class ActiveCurrencyAndAmountRandom {
 
-    public ActiveCurrencyAndAmountRandom(ConfigProperties configProperties)
-    {
-        this.configProperties = configProperties;
-        List<HashMap<String, String>> currency = configProperties.getCurrency();
-        SecureRandom random = new SecureRandom();
-        int index = random.nextInt(currency.size());
-        this.setCcy(currency.get(index).get("Code"));
-        this.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+    // Assigns random currency
+    public static ActiveCurrencyAndAmount getActiveCurrencyAndAmount(ConfigProperties configProperties) {
+        ActiveCurrencyAndAmount activeCurrencyAndAmount = new ActiveCurrencyAndAmount();
+        activeCurrencyAndAmount.setCcy(Helper.getRandomCurrencyCode(configProperties));
+        activeCurrencyAndAmount.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+        return activeCurrencyAndAmount;
+    }
+
+    // Assigns currency code for the country provided
+    public static ActiveCurrencyAndAmount getActiveCurrencyAndAmount(ConfigProperties configProperties, String countryCode) {
+        ActiveCurrencyAndAmount activeCurrencyAndAmount = new ActiveCurrencyAndAmount();
+        activeCurrencyAndAmount.setCcy(Helper.getCountryCurrencyCode(configProperties, countryCode));
+        activeCurrencyAndAmount.setValue(Helper.getLongDigitsRandomNumber(5000,10000000000L));
+        return activeCurrencyAndAmount;
     }
 }

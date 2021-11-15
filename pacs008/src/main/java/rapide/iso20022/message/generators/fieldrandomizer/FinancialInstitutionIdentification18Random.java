@@ -18,50 +18,115 @@ import rapide.iso20022.util.StringUtils;
 import java.util.List;
 
 @Slf4j
-public class FinancialInstitutionIdentification18Random extends FinancialInstitutionIdentification18 {
+public class FinancialInstitutionIdentification18Random {
 
-    protected BICRepository bicRepository;
-    protected List<String> restrictedBICList;
+    public static FinancialInstitutionIdentification18
+        getFinancialInstitutionIdentification(BICRepository bicRepository, List<String> sourceBICList, String countryCode) {
+        if (sourceBICList != null && !sourceBICList.isEmpty())
+            return getFinancialInstitutionIdentification(sourceBICList, countryCode);
+        else
+            return getFinancialInstitutionIdentification(bicRepository, countryCode);
+    }
 
+    public static FinancialInstitutionIdentification18
+        getFinancialInstitutionIdentification(BICRepository bicRepository, List<String> sourceBICList) {
+        if (sourceBICList != null && !sourceBICList.isEmpty())
+            return getFinancialInstitutionIdentificationFromSourceList(sourceBICList);
+        else
+            return getFinancialInstitutionIdentification(bicRepository);
+    }
 
-    public FinancialInstitutionIdentification18Random(BICRepository bicRepository, List<String> restrictedBICList){
-        this.bicRepository = bicRepository;
-        this.restrictedBICList = restrictedBICList;
-
-        if (restrictedBICList==null) {
-            // get random BIC from repo
+    public static FinancialInstitutionIdentification18
+        getFinancialInstitutionIdentification(BICRepository bicRepository,
+                                             String countryCode) {
+        // get random BIC from repo by country code
+        if (countryCode != null && countryCode.length() == 2) {
             BICRecord query;
 
-            List<BICRecord> bicPage = bicRepository.findAllExcludeInvalid();
-            int idx = (int) (Math.random() *  bicPage.size());
+            FinancialInstitutionIdentification18 financialInstitutionIdentification =
+                    new FinancialInstitutionIdentification18();
+
+            List<BICRecord> bicPage = bicRepository.findByCountryCode(countryCode);
+            int idx = (int) (Math.random() * bicPage.size());
 
             if (!bicPage.isEmpty()) {
                 query = bicPage.get(idx);
-                this.setBICFI(query.getBicCode());
-//            this.setNm(Common.StringStripper(query.getInstitutionName(),140));
-//            this.setPstlAdr(getBICAddress(query));
-            } else
+                financialInstitutionIdentification.setBICFI(query.getBicCode());
+            } else {
                 log.error("Error Generating Random BIC number");
-        }
-        else
-        {
-            boolean validBic = false;
-            while(!validBic)
-            {
-                int idx = (int) (Math.random() * restrictedBICList.size());
-                String bic = restrictedBICList.get(idx);
-                if (!bic.endsWith("0") && !bic.endsWith("1"))
-                {
-                    this.setBICFI(restrictedBICList.get(idx));
-                    validBic=true;
-                }
-                else
-                    log.warn("Warning, provided Bic is not valid. trying another one.");
             }
+
+            return financialInstitutionIdentification;
+        } else {
+            return getFinancialInstitutionIdentification(bicRepository);
         }
     }
 
-    public PostalAddress24 getBICAddress(BICRecord record) {
+    public static FinancialInstitutionIdentification18 getFinancialInstitutionIdentification(BICRepository bicRepository) {
+        // get random BIC from repo
+        BICRecord query;
+
+        FinancialInstitutionIdentification18 financialInstitutionIdentification =
+                new FinancialInstitutionIdentification18();
+
+        List<BICRecord> bicPage = bicRepository.findAllExcludeInvalid();
+        int idx = (int) (Math.random() * bicPage.size());
+
+        if (!bicPage.isEmpty()) {
+            query = bicPage.get(idx);
+            financialInstitutionIdentification.setBICFI(query.getBicCode());
+//            this.setNm(Common.StringStripper(query.getInstitutionName(),140));
+//            this.setPstlAdr(getBICAddress(query));
+        } else {
+            log.error("Error Generating Random BIC number");
+        }
+
+        return financialInstitutionIdentification;
+    }
+
+    public static FinancialInstitutionIdentification18
+        getFinancialInstitutionIdentification(List<String> sourceBICList, String countryCode) {
+        FinancialInstitutionIdentification18 financialInstitutionIdentification =
+                new FinancialInstitutionIdentification18();
+
+        boolean validBic = false;
+        while(!validBic) {
+            int idx = (int) (Math.random() * sourceBICList.size());
+            String bic = sourceBICList.get(idx);
+            if (!bic.endsWith("0") && !bic.endsWith("1") && Helper.getCountryFromBIC(bic).equals(countryCode))
+            {
+                financialInstitutionIdentification.setBICFI(sourceBICList.get(idx));
+                validBic = true;
+            }
+            else
+                log.warn("Warning, provided Bic is not valid. trying another one.");
+        }
+
+        return financialInstitutionIdentification;
+    }
+
+    public static FinancialInstitutionIdentification18
+    getFinancialInstitutionIdentificationFromSourceList(List<String> sourceBICList) {
+        FinancialInstitutionIdentification18 financialInstitutionIdentification =
+                new FinancialInstitutionIdentification18();
+
+        boolean validBic = false;
+        while(!validBic) {
+            int idx = (int) (Math.random() * sourceBICList.size());
+            String bic = sourceBICList.get(idx);
+            if (!bic.endsWith("0") && !bic.endsWith("1"))
+            {
+                financialInstitutionIdentification.setBICFI(sourceBICList.get(idx));
+                validBic = true;
+            }
+            else
+                log.warn("Warning, provided Bic is not valid. trying another one.");
+        }
+
+        return financialInstitutionIdentification;
+    }
+
+    public static PostalAddress24 getBICAddress(BICRecord record) {
         PostalAddress24 address = new PostalAddress24();
         address.setCtry(record.getCountryCode());
         address.setStrtNm(StringUtils.removeNonPrintableChars(StringUtils.StringStripper(record.getPhysicalAddress1(),70)));

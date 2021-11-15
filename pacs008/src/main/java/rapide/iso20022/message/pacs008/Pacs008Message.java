@@ -15,14 +15,13 @@ import rapide.iso20022.message.generators.fieldrandomizer.*;
 import rapide.iso20022.message.generators.fieldrandomizer.Helper;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
 import java.security.SecureRandom;
-import java.time.LocalDate;
 
 @Slf4j
 public class Pacs008Message {
+
+    private String[] creditorAccounts = {"6723847BB", "8934833092", "43487202984", "84349274229", "468924248622"};
 
     private MxPacs00800108 message;
     private BICRepository bicRepository;
@@ -31,8 +30,8 @@ public class Pacs008Message {
 
     private String messageId, uuid;
     private XMLGregorianCalendar messageTimestamp;
-    private BranchAndFinancialInstitutionIdentification6Random instAgentFrom;
-    private BranchAndFinancialInstitutionIdentification6Random instAgentTo;
+    private BranchAndFinancialInstitutionIdentification6 instructingAgentFrom;
+    private BranchAndFinancialInstitutionIdentification6 instructedAgentTo;
 
     public Pacs008Message() {
         message = new MxPacs00800108();
@@ -66,69 +65,132 @@ public class Pacs008Message {
         headerParam.setMsgDefIdr("pacs.008.001.08");
         headerParam.setBizMsgIdr(this.messageId);
         headerParam.setCreDt(this.messageTimestamp);
-        headerParam.setFr(new Party44ChoiceRandom(instAgentFrom.getFinInstnId().getBICFI()));
-        headerParam.setTo(new Party44ChoiceRandom(instAgentTo.getFinInstnId().getBICFI()));
+        headerParam.setFr(Party44ChoiceRandom.getParty44ChoiceRandom(instructingAgentFrom.getFinInstnId().getBICFI()));
+        headerParam.setTo(Party44ChoiceRandom.getParty44ChoiceRandom(instructedAgentTo.getFinInstnId().getBICFI()));
         this.message.setAppHdr(headerParam);
     }
 
     public CreditTransferTransaction39 generateTransactionInfo() throws DatatypeConfigurationException {
         CreditTransferTransaction39 transactionInfo =  new CreditTransferTransaction39();
-        instAgentFrom = new BranchAndFinancialInstitutionIdentification6Random(bicRepository, configProperties.getSourceBicList());
-        instAgentTo = new BranchAndFinancialInstitutionIdentification6Random(bicRepository, configProperties.getDestinationBicList());
-        transactionInfo.setInstgAgt(instAgentFrom);
-        transactionInfo.setInstdAgt(instAgentTo);
+        instructingAgentFrom = BranchAndFinancialInstitutionIdentification6Random
+            .getBranchAndFinancialInstitutionIdentification(bicRepository, configProperties.getSourceBicList());
+        instructedAgentTo = BranchAndFinancialInstitutionIdentification6Random
+            .getBranchAndFinancialInstitutionIdentification(bicRepository, configProperties.getDestinationBicList());
+        String fromCountryCode = Helper.getCountryFromBIC(instructingAgentFrom.getFinInstnId().getBICFI());
+        String toCountryCode = Helper.getCountryFromBIC(instructedAgentTo.getFinInstnId().getBICFI());
 
-        transactionInfo.setDbtr(new PartyIdentification135Random(legalEntityRepository));
-        transactionInfo.setCdtr(new PartyIdentification135Random(legalEntityRepository));
+        // From and To countries must be different
+        if (toCountryCode.equals(fromCountryCode)) {
+            int maxRetries = configProperties.getInvalidMessageRetry();
+            int count = 0;
+            boolean found = false;
+            while (count < maxRetries) {
+                instructedAgentTo = BranchAndFinancialInstitutionIdentification6Random
+                        .getBranchAndFinancialInstitutionIdentification(
+                                bicRepository, configProperties.getDestinationBicList());
+                toCountryCode = Helper.getCountryFromBIC(instructedAgentTo.getFinInstnId().getBICFI());
+                if (!toCountryCode.equals(fromCountryCode)) {
+                    found = true;
+                    break;
+                }
+                else {
+                    count++;
+                }
+            }
 
-        // Statically rendered optional rich data elements - using largely static value
-        // addresses issue https://jira.aws-prototyping.cloud/browse/PE20836-32
-        transactionInfo.setCdtrAcct(
-                new CashAccount38().setId(
-                        new AccountIdentification4Choice().setOthr(
-                                new GenericAccountIdentification1()
-                                        .setId("6723847BB")))
-                        .setCcy("USD")
-                        .setNm("ABC Import Receivables Europe")
-                        .setPrxy(new ProxyAccountIdentification1()
-                                                .setTp(new ProxyAccountType1Choice().setCd("EMAL"))
-                                                .setId("webmaster-services-peter-crazy-but-oh-so-ubber-cool-english-alphabet-loverer-abcdefghijklmnopqrstuvwxyz@please-try-to.send-me-an-email-if-you-can-possibly-begin-to-remember-this-coz.this-is-the-longest-email-address-known-to-man-but-to-be-honest.this-is-such-a-stupidly-long-sub-domain-it-could-go-on-forever.pacraig.com")))
-                .addInstrForCdtrAgt(new InstructionForCreditorAgent1().setCd(Instruction3Code.PHOB)
-                        .setInstrInf("Please call the creditor as soon as funds are credited to the account.The phone number is 4234421443 or 324979347. Leave a message."))
-                .addInstrForNxtAgt(new InstructionForNextAgent1().setInstrInf("Good luck with this payment order.I love this free text field and really want to fill it with useless information"))
-                .setPurp(new Purpose2Choice().setCd("COMC"))
-                .addRgltryRptg(new RegulatoryReporting3().setDbtCdtRptgInd(RegulatoryReportingType1Code.CRED)
-                        .setAuthrty(new RegulatoryAuthority2().setNm("Reserve Bank of India")
-                                .setCtry("IN")).addDtls(new StructuredRegulatoryReporting3()
-                                .setTp("Export Reporting")
-                                .setDt(DatatypeFactory.newInstance().newXMLGregorianCalendar(LocalDate.of(2019, 1, 13).toString()))
-                                .setCtry("IN")
-                                .setCd("P0102")
-                                .setAmt(new ActiveOrHistoricCurrencyAndAmount()
-                                        .setCcy("USD")
-                                        .setValue(new BigDecimal("6891234567.50"))
-                                )
-                        )
-                );
+            if (!found) {
+                StringBuffer errorMsg =
+                    new StringBuffer("Unable to continue, cannot find different country BICs for To and From Finanancial Institutions. ");
+                errorMsg.append(" Increase number of different country BICs to improve probability of finding different country BICs.");
+                log.error(errorMsg.toString());
+                throw new RuntimeException(errorMsg.toString());
+            }
+        }
 
-        transactionInfo.setDbtrAgt(new BranchAndFinancialInstitutionIdentification6Random(bicRepository));
-        transactionInfo.setCdtrAgt(new BranchAndFinancialInstitutionIdentification6Random(bicRepository));
+        String fromCurrencyCode = Helper.getCountryCurrencyCode(configProperties, fromCountryCode);
+        String toCurrencyCode = Helper.getCountryCurrencyCode(configProperties, toCountryCode);
+
+        transactionInfo.setInstgAgt(instructingAgentFrom);
+        transactionInfo.setInstdAgt(instructedAgentTo);
+
+        PartyIdentification135 debtor = PartyIdentification135Random.getPartyIdentification135(legalEntityRepository, fromCountryCode);
+        transactionInfo.setDbtr(debtor);
+        PartyIdentification135 creditor = PartyIdentification135Random.getPartyIdentification135(legalEntityRepository, toCountryCode);
+        transactionInfo.setCdtr(creditor);
+
+        transactionInfo.setDbtrAgt(
+                BranchAndFinancialInstitutionIdentification6Random
+                        .getBranchAndFinancialInstitutionIdentification(bicRepository, fromCountryCode)
+        );
+        transactionInfo.setCdtrAgt(
+                BranchAndFinancialInstitutionIdentification6Random
+                        .getBranchAndFinancialInstitutionIdentification(bicRepository, toCountryCode)
+        );
         transactionInfo.setPmtId(generatePaymentIdentification());
 
         transactionInfo.setChrgBr(generateChargeBearer());
         if (transactionInfo.getChrgBr().equals(ChargeBearerType1Code.CRED))
-            transactionInfo.addChrgsInf(generateChargeInfCRED(instAgentFrom.getFinInstnId().getBICFI()));
+            transactionInfo.addChrgsInf(generateChargeInfCRED(instructingAgentFrom.getFinInstnId().getBICFI()));
 
-        transactionInfo.setPmtTpInf(new PaymentTypeInformation28Random(configProperties));
+        transactionInfo.setPmtTpInf(PaymentTypeInformation28Random.getPaymentTypeInformation28(configProperties));
 
-        transactionInfo.setPrvsInstgAgt1(new BranchAndFinancialInstitutionIdentification6Random(bicRepository));
-        transactionInfo.setIntrmyAgt1(new BranchAndFinancialInstitutionIdentification6Random(bicRepository));
+        transactionInfo.setPrvsInstgAgt1(
+                BranchAndFinancialInstitutionIdentification6Random
+                        .getBranchAndFinancialInstitutionIdentification(bicRepository, fromCountryCode)
+        );
+        transactionInfo.setIntrmyAgt1(
+                BranchAndFinancialInstitutionIdentification6Random
+                        .getBranchAndFinancialInstitutionIdentification(bicRepository, toCountryCode)
+        );
 
-        ActiveCurrencyAndAmountRandom randomSettleAmount = new ActiveCurrencyAndAmountRandom(configProperties);
+        ActiveCurrencyAndAmount randomSettleAmount =
+                ActiveCurrencyAndAmountRandom.getActiveCurrencyAndAmount(configProperties, fromCountryCode);
         transactionInfo.setIntrBkSttlmAmt(randomSettleAmount);
         transactionInfo.setIntrBkSttlmDt(this.messageTimestamp);
-        transactionInfo.setInstdAmt(new ActiveOrHistoricCurrencyAndAmountRandom(randomSettleAmount.getValue(),randomSettleAmount.getCcy()));
+        ActiveOrHistoricCurrencyAndAmount instdCurrencyAndAmount =
+                ActiveOrHistoricCurrencyAndAmountRandom
+                        .getActiveOrHistoricCurrencyAndAmount(randomSettleAmount.getValue(), randomSettleAmount.getCcy());
+        transactionInfo.setInstdAmt(instdCurrencyAndAmount);
 
+        // TODO make it dynamic
+        // Statically rendered optional rich data elements - using largely static value
+        int idx = (int)(Math.random() * creditorAccounts.length);
+        transactionInfo.setCdtrAcct(
+            new CashAccount38().setId(
+                new AccountIdentification4Choice().setOthr(
+                    new GenericAccountIdentification1()
+                        .setId(creditorAccounts[idx])
+                )
+            )
+            .setCcy(toCurrencyCode)
+            .setNm(creditor.getNm())
+            .setPrxy(new ProxyAccountIdentification1()
+                .setTp(new ProxyAccountType1Choice().setCd("EMAL"))
+                .setId("webmaster-services-peter-crazy-but-oh-so-ubber-cool-english-alphabet-loverer-abcdefghijklmnopqrstuvwxyz@please-try-to.send-me-an-email-if-you-can-possibly-begin-to-remember-this-coz.this-is-the-longest-email-address-known-to-man-but-to-be-honest.this-is-such-a-stupidly-long-sub-domain-it-could-go-on-forever.pacraig.com")
+            )
+        );
+        transactionInfo.addInstrForCdtrAgt(new InstructionForCreditorAgent1().setCd(Instruction3Code.PHOB)
+            .setInstrInf("Please call the creditor as soon as funds are credited to the account.The phone number is 4234421443 or 324979347. Leave a message.")
+        );
+        transactionInfo.addInstrForNxtAgt(
+            new InstructionForNextAgent1()
+                .setInstrInf("Good luck with this payment order.I love this free text field and really want to fill it with useless information")
+        );
+
+        // Fixed purpose code COMC as it is not used in payment processing, it is meant for end customers, debtor or creditor.
+        transactionInfo.setPurp(new Purpose2Choice().setCd("COMC"));
+
+        // Add regulatory reporting for country code IN
+        if (fromCountryCode.equals("IN")) {
+            transactionInfo.addRgltryRptg(RegulatoryReporting3Random.getRegulatoryReporting3(false,
+                    fromCountryCode,
+                    instdCurrencyAndAmount));
+        }
+        if (toCountryCode.equals("IN")) {
+            transactionInfo.addRgltryRptg(RegulatoryReporting3Random.getRegulatoryReporting3(true,
+                    toCountryCode,
+                    instdCurrencyAndAmount));
+        }
         return transactionInfo;
     }
 
@@ -158,14 +220,16 @@ public class Pacs008Message {
         return ChargeBearerType1Code.values()[index];
     }
 
-    public Charges7 generateChargeInfCRED(String BICFI) {
+    public Charges7 generateChargeInfCRED(String bicFi) {
         Charges7 charge = new Charges7();
         SecureRandom random = new SecureRandom();
         float value = random.nextInt(1500) / 100;
-        ActiveOrHistoricCurrencyAndAmountRandom amount = new ActiveOrHistoricCurrencyAndAmountRandom(configProperties);
+        ActiveOrHistoricCurrencyAndAmount amount =
+                ActiveOrHistoricCurrencyAndAmountRandom
+                        .getActiveOrHistoricCurrencyAndAmount(configProperties, Helper.getCountryFromBIC(bicFi));
         charge.setAmt(amount);
         BranchAndFinancialInstitutionIdentification6 finInstnId = new BranchAndFinancialInstitutionIdentification6();
-        finInstnId.setFinInstnId(new FinancialInstitutionIdentification18().setBICFI(BICFI));
+        finInstnId.setFinInstnId(new FinancialInstitutionIdentification18().setBICFI(bicFi));
         charge.setAgt(finInstnId);
         return charge;
     }

@@ -1,8 +1,8 @@
 # log level values: trace, debug, info, warn, error, fatal or off
 logging:
   level:
-    root: error
-    rapide: error
+    root: info
+    rapide: info
 spring:
   datasource:
     initialization-mode: always
@@ -62,16 +62,25 @@ rapide:
       Code: USD
     - Country: UK
       Code: GBP
+    - Country: GB
+      Code: GBP
+    - Country: IN
+      Code: INR
+    - Country: MX
+      Code: MXN
+    - Country: CA
+      Code: CAD
+    - Country: IE
+      Code: EUR
+    - Country: TH
+      Code: THB
   ValidationSchema:
     - Message: 00800108
       FileName: CBPRPlus_pacs_008_001_08_20210413_0914.xsd
   InvalidMessageRetry: 5
-  SourceBicList:
-    - ABOCAEAA
-    - FEDXAE21
-    - FEDXAEAA
-    - FGBMAEAA
-    - NBADAEAA
+#  SourceBicList:
+#    - ABOCAEAA
+#    - FEDXAE21
 #  DestinationBicList:
 #    - FEDXAE21
 #    - BEKBGA91

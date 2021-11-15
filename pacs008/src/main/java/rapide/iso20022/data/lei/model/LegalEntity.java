@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "LEI")
 @NamedQuery(name = "LegalEntity.findByLegalCountry",
-        query = "select l from LegalEntity l where l.legalAddressCountry = ?1")
+        query = "select l.id from LegalEntity l where l.legalAddressCountry = ?1")
 @NamedQuery(name = "LegalEntity.findByHQCountry",
         query = "select l from LegalEntity l where l.headquartersAddressCountry = ?1")
 public class LegalEntity implements Serializable {

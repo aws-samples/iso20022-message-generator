@@ -16,6 +16,8 @@ import java.io.Serializable;
         query = "select b from BICRecord b where b.bicCode = ?1")
 @NamedQuery(name = "BICRecord.findByBranch",
         query = "select b from BICRecord b where b.branchCode = ?1")
+@NamedQuery(name = "BICRecord.findByCountryCode",
+        query = "select b from BICRecord b where b.countryCode = ?1")
 @NamedQuery(name = "BICRecord.findAllExcludeInvalid",
         query="select b from BICRecord b where NOT (b.bicCode LIKE '%0' or b.bicCode LIKE '%1')")
 public class BICRecord implements Serializable {

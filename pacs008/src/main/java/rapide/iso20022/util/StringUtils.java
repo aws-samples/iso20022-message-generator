@@ -8,6 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class StringUtils {
+
+    public static boolean empty(final String s) {
+        return s == null || s.isBlank();
+    }
+
     public static String removeNonPrintableChars(String source){
         //return source.replaceAll("\\p{C}", "");
         return cleanTextContent(source);

@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import rapide.iso20022.data.lei.model.LegalEntity;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface LegalEntityRepository extends JpaRepository<LegalEntity, String> {
-    Set<LegalEntity> findByLegalCountry(String country);
-    Set<LegalEntity> findByHQCountry(String country);
+    List<String> findByLegalCountry(String country);
+    List<LegalEntity> findByHQCountry(String country);
 }

@@ -43,7 +43,8 @@ AS SELECT
     "Entity.HeadquartersAddress.Region" as headquarters_address_region,
     "Entity.HeadquartersAddress.Country" as headquarters_address_country,
     "Entity.HeadquartersAddress.PostalCode" as headquarters_address_postal_code
-   FROM CSVREAD('classpath:db/lei_sample_records.csv', NULL, 'fieldDelimiter="');
+--   FROM CSVREAD('classpath:db/lei_sample_records.csv', NULL, 'fieldDelimiter="');
+    FROM CSVREAD('classpath:db/lei_prototype_records.csv', NULL, 'fieldDelimiter="');
 
 CREATE TABLE BIC(ID varchar(255) PRIMARY KEY,
                  BIC_code VARCHAR(512),
@@ -68,4 +69,5 @@ AS SELECT
        "LOCATION" as location,
        "COUNTRY NAME" as country_name,
        SUBSTRING("BIC CODE" FROM 5 FOR 2) as country_code
-    FROM CSVREAD('classpath:db/bic_sample_records.csv', NULL, 'fieldDelimiter="');
+--    FROM CSVREAD('classpath:db/bic_sample_records.csv', NULL, 'fieldDelimiter="');
+       FROM CSVREAD('classpath:db/bic_fake_records.csv', NULL, 'fieldDelimiter="');
