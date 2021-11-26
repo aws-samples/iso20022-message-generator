@@ -1,8 +1,11 @@
 # ML Prototypes - ML Models for ISO20022 PACS008 Message Processing Prediction
 
-This directory contains machine learning model prototypes for predicting if an ISO20022 pacs.008 XML message will be
-Amazon SageMaker Machine Learning project for creating a machine learning model that predicts whether an ISO20022 pacs.008 
+This directory contains machine learning model prototypes that help in predicting whether an ISO20022 pacs.008 
 XML message will be successfully processed (`Success`) or fail processing (`Failure`) leading to exception processing. 
+Amazon SageMaker built-in machine learning algorithms XGBoost and Linear Learner are used to train two different model.
+Amazon SageMaker Autopilot is used demonstrate automated machine learning (AutoML) that reduces the effort required to 
+build, train, tune and deploy a model.  
+
 The prototype models' prediction is in form of a tuple [(1=Success, 0=Failure), Probability Score] where probability score is probability of the predicted 
 outcome.
 
