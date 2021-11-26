@@ -7,41 +7,6 @@ The prototype models' prediction is in form of a tuple [(1=Success, 0=Failure), 
 outcome.
 
 ## Directory Breakdown
-This directory contains following files:   
-
-├── README.md  
-├── docs  
-│   └── images  
-│       └── iso20022-cbpr-ml-lifecycle.png  
-└── pacs008  
-    ├── automl  
-    │    ├── automl_batch_transform_example.ipynb  
-    │    ├── pacs008_automl_model_deployment.ipynb  
-    │    └── pacs008_automl_model_training.ipynb  
-    ├── images  
-    │    ├── batch-transform.png  
-    │    ├── inference-pipeline.png  
-    │    ├── iso20022-prototype-AutoML.png  
-    │    └── iso20022-prototype-real-time-inference.png  
-    ├── linear-learner  
-    │    ├── ll_batch_transform_example.ipynb  
-    │    └── pacs008_linear_learner_inference_pipeline.ipynb  
-    ├── sklearn-transformers  
-    │    ├── __init__.py  
-    │    ├── pacs008_sklearn_featurizer.py  
-    │    └── pacs008_sklearn_transformer.py  
-    ├── synthetic-data   
-    │    ├── bic_ml_prototype_records.csv  
-    │    ├── gen_pacs008_synthetic_dataset.ipynb  
-    │    ├── iso20022-data  
-    │    │     └── iso20022-raw-messages.tar.gz  
-    │    ├── iso20022_lei_bic_datasets.ipynb  
-    │    └── lei_ml_prototype_records.csv  
-    └── xgboost  
-        ├── pacs008_xgboost_inference_pipeline.ipynb
-        ├── pacs008_xgboost_local.ipynb  
-        └── xgb_batch_transform_example.ipynb  
-  
 The project consists of Python notebooks in following directories:
 1. pacs008/synthetic-data: This directory contains two notebooks for generating synthetic data for the ML prototype. 
    * iso20022_lei_bic_datasets.ipynb: This notebook generates fake BIC database as a csv file and LEI database again as a
