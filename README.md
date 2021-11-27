@@ -9,7 +9,7 @@ name of the wrapper bash shell script for the CLI tool.
 This repository contains source code for iso20022 message generator tool (`rapide`) and machine learning prototype models. This 
 page has instructions for building and using `rapide`. The code for machine learning prototype models in form of Python notebooks 
 is in [ml-models](ml-models) directory. The [readme](ml-models/README.md) in that directory includes instructions for using 
-machine learning model Python notebooks to build, train, deploy and use trained model for realtime and batch inferences. 
+Python notebooks to build, train, deploy and use trained model for realtime and batch inferences. 
 These models help in predicting if an ISO20022 pacs.008 XML message will be successfully processed (Success) or fail 
 processing (Failure) leading to exception processing.
 
