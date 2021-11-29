@@ -3,8 +3,15 @@ This project is a simple ISO20022 message generator that generates pacs.008 xml 
 project is called [rapide](https://dictionary.cambridge.org/dictionary/french-english/rapide), a French word. It translates to 
 [swift or fast or quick](https://dictionary.cambridge.org/dictionary/english-french/swift) or swift, a swallow like bird. 
 
-The Java package names start with rapide at the root. You will notice references to rapide in different places such as 
-name of the wrapper bash shell script for the CLI tool.
+The Java package names start with `rapide` at the root. You will notice references to rapide in different places such as 
+name of the wrapper bash shell script for the CLI tool.  
+
+This repository contains source code for iso20022 message generator tool (`rapide`) and machine learning prototype models. This 
+page has instructions for building and using `rapide`. The code for machine learning prototype models in form of Python notebooks 
+is in [ml-models](ml-models) directory. The [readme](ml-models/README.md) in that directory includes instructions for using 
+Python notebooks to build, train, deploy and use trained model for realtime and batch inferences. 
+These models help in predicting if an ISO20022 pacs.008 XML message will be successfully processed (Success) or fail 
+processing (Failure) leading to exception processing.
 
 ## Table of Contents
 

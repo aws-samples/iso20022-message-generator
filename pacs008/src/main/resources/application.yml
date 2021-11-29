@@ -1,8 +1,8 @@
 # log level values: trace, debug, info, warn, error, fatal or off
 logging:
   level:
-    root: info
-    rapide: info
+    root: error
+    rapide: error
 spring:
   datasource:
     initialization-mode: always
@@ -77,7 +77,7 @@ rapide:
   ValidationSchema:
     - Message: 00800108
       FileName: CBPRPlus_pacs_008_001_08_20210413_0914.xsd
-  InvalidMessageRetry: 5
+  InvalidMessageRetry: 10
 #  SourceBicList:
 #    - ABOCAEAA
 #    - FEDXAE21
