@@ -52,8 +52,20 @@ public class Pacs008Validator implements IValidator {
     }
 
     private void validate(String xmlString, String schemaFile) {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
         try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            // Guard against XXE injection attacks.
+            // See https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md.
+            // Turn on secure processing (FSP), disable all external connections.
+            schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            // schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+            // Disable external entity processing (DTDs) and stylesheet processing
+            // Not needed explicitly, handled by FSP, uncomment if customization is needed and provide protocol(s).
+            // schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            // schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            // Only allow local file or files in jar to be processed for XML schema files
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "file, jar:file");
 
             URL xsdResource = getClass().getClassLoader().getResource(schemaFile);
             Schema schema = schemaFactory.newSchema(xsdResource);
