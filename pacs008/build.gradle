@@ -5,6 +5,7 @@
 plugins {
     // common build conventions for all rapide projects
     id 'rapide.commons'
+    id 'application'
     id 'org.springframework.boot' version '2.5.8'
     id 'com.adarshr.test-logger' version '3.0.0'
 }
