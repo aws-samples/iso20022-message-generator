@@ -17,8 +17,8 @@ ext {
     springBootVersion = '2.5.8'
 }
 
-bootJar {
-    mainClassName = 'rapide.iso20022.cli.RapideCLIApplication'
+springBoot {
+    mainClass.set('rapide.iso20022.cli.RapideCLIApplication')
 }
 
 dependencies {
