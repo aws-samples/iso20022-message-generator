@@ -5,7 +5,7 @@
 plugins {
     // common build conventions for all rapide projects
     id 'rapide.commons'
-    id 'org.springframework.boot' version '2.4.5'
+    id 'org.springframework.boot' version '2.5.8'
     id 'com.adarshr.test-logger' version '3.0.0'
 }
 
@@ -13,7 +13,7 @@ group = "${group}.pacs008-message-generator"
 version = '1.0.0-SNAPSHOT'
 
 ext {
-    springBootVersion = '2.4.5'
+    springBootVersion = '2.5.8'
 }
 
 bootJar {
