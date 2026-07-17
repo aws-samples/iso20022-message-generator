@@ -71,6 +71,9 @@ public class Pacs008Validator implements IValidator {
             Schema schema = schemaFactory.newSchema(xsdResource);
 
             Validator validator = schema.newValidator();
+            // Guard against XXE injection attacks.
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             //validator.validate(new StreamSource(new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8))));
             validator.validate(new StreamSource(new StringReader(xmlString)));
             validationResponse.setValid(true);
